@@ -12,7 +12,7 @@ PORT = find_free_port() if WEB_PORT <= 0 else WEB_PORT
 if not AUTHENTICATION: AUTHENTICATION = None
 
 initial_prompt = "Serve me as a writing and programming assistant."
-title_html = """<h1 align="center">ChatGPT 学术优化</h1>"""
+title_html = """<h1 align="left">ChatGPT 学术优化</h1>"""
 
 # 问询记录, python 版本建议3.9+（越新越好）
 import logging
@@ -139,6 +139,4 @@ def auto_opentab_delay():
         webbrowser.open_new_tab(f"http://localhost:{PORT}")
     threading.Thread(target=open, name="open-browser", daemon=True).start()
 
-auto_opentab_delay()
-demo.title = "ChatGPT 学术优化"
-demo.queue(concurrency_count=CONCURRENT_COUNT).launch(server_name="0.0.0.0", share=True, server_port=PORT, auth=AUTHENTICATION)
+demo.launch()
