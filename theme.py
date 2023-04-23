@@ -28,7 +28,7 @@ CODE_HIGHLIGHT, = get_conf('CODE_HIGHLIGHT')
 
 def adjust_theme():
     try:
-        color_er = gr.themes.utils.colors.pink
+        color_er = gr.themes.utils.colors.fuchsia
         set_theme = gr.themes.Default(
             primary_hue=gr.themes.utils.colors.sky,
             neutral_hue=gr.themes.utils.colors.fuchsia,
@@ -154,10 +154,12 @@ advanced_css = """
     padding: 1em;
     margin: 1em 2em 1em 0.5em;
 }
+
 """
 
 if CODE_HIGHLIGHT:
     advanced_css += """
+
 .hll { background-color: #ffffcc }
 .c { color: #3D7B7B; font-style: italic } /* Comment */
 .err { border: 1px solid #FF0000 } /* Error */
