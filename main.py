@@ -59,7 +59,7 @@ with gr.Blocks(title="ChatGPT 学术优化", theme=set_theme, analytics_enabled=
 			chatbot.style(height=CHATBOT_HEIGHT)
 			history = gr.State([])
 		with gr_L2(scale=1):
-			with gr.Accordion("用户输入", open=True) as area_input_primary:
+			with gr.Accordion("输入区", open=True) as area_input_primary:
 				with gr.Row():
 					txt = gr.Textbox(show_label=False, placeholder="Input question here.").style(container=False)
 				with gr.Row():
@@ -69,10 +69,11 @@ with gr.Blocks(title="ChatGPT 学术优化", theme=set_theme, analytics_enabled=
 					stopBtn = gr.Button("停止", variant="secondary"); stopBtn.style(size="sm")
 					clearBtn = gr.Button("清除", variant="secondary", visible=True); clearBtn.style(size="sm")
 				with gr.Row():
-					status = gr.Markdown(f"Tips: 按Enter提交; 按Shift+Enter换行。")
+					status = gr.Markdown(f"Tips: 按Enter提交, 按Shift+Enter换行。")
 			with gr.Accordion("基础功能区", open=False) as area_basic_fn:
 				with gr.Row():
 					for k in functional:
+						if ("Visible" in functional[k]) and (not functional[k]["Visible"]): continue
 						variant = functional[k]["Color"] if "Color" in functional[k] else "secondary"
 						functional[k]["Button"] = gr.Button(k, variant=variant)
 			with gr.Accordion("函数插件区", open=False) as area_crazy_fn:
@@ -114,7 +115,7 @@ with gr.Blocks(title="ChatGPT 学术优化", theme=set_theme, analytics_enabled=
 				with gr.Row():
 					resetBtn2 = gr.Button("重置", variant="secondary"); resetBtn2.style(size="sm")
 					stopBtn2 = gr.Button("停止", variant="secondary"); stopBtn2.style(size="sm")
-					clearBtn2 = gr.Button("清除", variant="secondary", visible=True); clearBtn2.style(size="sm")
+					clearBtn2 = gr.Button("清除", variant="secondary", visible=False); clearBtn2.style(size="sm")
 	# 功能区显示开关与功能区的互动
 	def fn_area_visibility(a):
 		ret = {}
@@ -143,6 +144,7 @@ with gr.Blocks(title="ChatGPT 学术优化", theme=set_theme, analytics_enabled=
 	clearBtn2.click(lambda: ("",""), None, [txt, txt2])
 	# 基础功能区的回调函数注册
 	for k in functional:
+		if ("Visible" in functional[k]) and (not functional[k]["Visible"]): continue
 		click_handle = functional[k]["Button"].click(fn=ArgsGeneralWrapper(predict), inputs=[*input_combo, gr.State(True), gr.State(k)], outputs=output_combo)
 		cancel_handles.append(click_handle)
 	# 文件上传区，接收文件后与chatbot的互动
@@ -172,9 +174,6 @@ with gr.Blocks(title="ChatGPT 学术优化", theme=set_theme, analytics_enabled=
 		yield from ArgsGeneralWrapper(crazy_fns[k]["Function"])(*args, **kwargs)
 	click_handle = switchy_bt.click(route,[switchy_bt, *input_combo, gr.State(PORT)], output_combo)
 	click_handle.then(on_report_generated, [file_upload, chatbot], [file_upload, chatbot])
-	# def expand_file_area(file_upload, area_file_up):
-	#     if len(file_upload)>0: return {area_file_up: gr.update(open=True)}
-	# click_handle.then(expand_file_area, [file_upload, area_file_up], [area_file_up])
 	cancel_handles.append(click_handle)
 	# 终止按钮的回调函数注册
 	stopBtn.click(fn=None, inputs=None, outputs=None, cancels=cancel_handles)
